@@ -1,6 +1,7 @@
 import { Button, message } from 'antd'
 import * as fabric from 'fabric'
 import { jsPDF } from 'jspdf'
+import { ImgUtils } from '../../utils/img'
 
 interface Props {
   canvas: fabric.Canvas | null
@@ -19,8 +20,9 @@ const ExportPdf = ({ canvas }: Props) => {
       // })
 
       const svgData = canvas.toSVG()
-      const blob = new Blob([svgData], { type: 'image/svg+xml' })
-      const dataUrl = URL.createObjectURL(blob)
+      const imgPng = await ImgUtils.svgTPng(svgData)
+
+      if (!imgPng) return message.error('导出失败，请重试')
 
       // 4. 创建 PDF 文档
       const pdf = new jsPDF({
@@ -53,12 +55,12 @@ const ExportPdf = ({ canvas }: Props) => {
       const offsetY = (pdfHeight - renderHeight) / 2
 
       // 7. 添加图片到 PDF
-      pdf.addImage(dataUrl, 'JPEG', offsetX, offsetY, renderWidth, renderHeight)
+      pdf.addImage(imgPng, 'JPEG', offsetX, offsetY, renderWidth, renderHeight)
 
       // 8. 添加元数据（可选）
       pdf.setProperties({
-        title: 'Fabric.js 设计导出',
-        creator: 'Fabric.js PDF Export'
+        title: 'PDF 设计导出',
+        creator: 'PDF Export'
       })
 
       // 9. 保存文件

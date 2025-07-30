@@ -56,8 +56,8 @@ export class TextUtils {
     canvas.requestRenderAll()
   }
 
-  static text2IText(target: fabric.FabricText) {
-    const newText = new fabric.IText(target.text, {
+  static text2IText(target: fabric.FabricText, canvas: fabric.Canvas) {
+    const newText = new fabric.Textbox(target.text, {
       // 位置和变换属性
       left: target.left,
       top: target.top,
@@ -95,6 +95,17 @@ export class TextUtils {
       selectable: true,
       evented: true
     })
+
+    newText.on('editing:exited', () => {
+      this.exitTextEdit(newText, canvas)
+    })
     return newText
+  }
+
+  static exitTextEdit = (text: fabric.Textbox, canvas: fabric.Canvas) => {
+    const textValue = text.text?.trim()
+    if (!textValue) {
+      canvas.remove(text)
+    }
   }
 }
