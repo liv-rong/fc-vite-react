@@ -11,6 +11,103 @@ const FabricJSCanvas = () => {
 
   useDeleteObjects(canvas)
 
+  const createNestedGroups = (canvas: fabric.Canvas) => {
+    // 最内层元素
+    const innerRect = new fabric.Rect({
+      width: 100,
+      height: 50,
+      fill: 'green',
+      left: 10,
+      top: 10,
+      selectable: false, // 初始不可选
+      evented: false // 初始不响应事件
+    })
+    const innerText = new fabric.Textbox('内层文本', {
+      left: 20,
+      top: 15,
+      fontSize: 14,
+      fill: 'white',
+      selectable: false, // 初始不可选
+      evented: false // 初始不响应事件
+    })
+
+    // 外层元素
+    const outerRect = new fabric.Rect({
+      width: 300,
+      height: 200,
+      fill: 'rgba(100,100,255,0.5)',
+      left: 0,
+      top: 0,
+      selectable: false, // 初始不可选
+      evented: false // 初始不响应事件
+    })
+    const outerText = new fabric.Textbox('外层文本', {
+      left: 100,
+      top: 80,
+      fontSize: 20,
+      fill: 'black',
+      selectable: false, // 初始不可选
+      evented: false // 初始不响应事件
+    })
+    // 中间层Group
+    const middleGroup = new fabric.Group([innerRect, innerText], {
+      left: 50,
+      top: 50,
+      subTargetCheck: true, // 允许检测子对象
+      interactive: false
+    })
+    // 中间层Group
+    const middleGroup1 = new fabric.Group([outerRect, outerText], {
+      left: 50,
+      top: 50,
+      subTargetCheck: true, // 允许检测子对象
+      interactive: false
+    })
+
+    // 最外层Group
+    const mainGroup = new fabric.Group([middleGroup, middleGroup1], {
+      left: 100,
+      top: 100,
+      subTargetCheck: true,
+      interactive: true
+    })
+
+    canvas.add(mainGroup)
+  }
+
+  const addShape = (canvas: fabric.Canvas) => {
+    const shape = new fabric.Rect({
+      left: 50,
+      top: 50,
+      width: 100,
+      height: 100,
+      fill: 'red',
+      stroke: 'black',
+      strokeWidth: 2,
+      selectable: false,
+      subTargetCheck: true,
+      evented: false // 初始不响应事件
+    })
+    const text = new fabric.Textbox('双击编辑文本', {
+      left: 50,
+      top: 150,
+      fontSize: 20,
+      fill: 'black',
+      selectable: false,
+      subTargetCheck: true,
+      evented: false // 初始不响应事件
+    })
+
+    const group = new fabric.Group([shape, text], {
+      left: 50,
+      top: 50,
+      subTargetCheck: true,
+      interactive: true
+    })
+
+    canvas.add(group)
+  }
+
   useEffect(() => {
     if (!canvasEl.current) return
 
@@ -27,61 +124,23 @@ const FabricJSCanvas = () => {
 
     setCanvas(canvas)
 
-    // 创建示例对象
-    const rect = new fabric.Rect({
-      width: 200,
-      height: 100,
-      fill: 'red',
-      left: 10,
-      top: 10,
-      selectable: false, // 初始不可选
-      evented: false // 初始不响应事件
-    })
-
-    const text = new fabric.Textbox('双击编辑文本', {
-      left: 50,
-      top: 30,
-      width: 150,
-      fontSize: 20,
-      fill: 'white',
-      selectable: false, // 初始不可选
-      evented: false, // 初始不响应事件
-      editable: false // 初始不可编辑
-    })
-
-    const circle = new fabric.Circle({
-      radius: 30,
-      fill: 'blue',
-      left: 150,
-      top: 50,
-      selectable: false,
-      evented: false
-    })
-
-    const group = new fabric.Group([rect, text, circle], {
-      left: 100,
-      top: 100,
-      subTargetCheck: true, // 允许检测子对象
-      interactive: true
-    })
-
-    canvas.add(group)
+    // createNestedGroups(canvas)
+    addShape(canvas)
 
     // 点击空白处结束编辑
+    // 事件处理
     canvas.on('mouse:down', (e) => {
       if (!e.target && CanvasUtils.isEditingGroup()) {
         CanvasUtils.endGroupEditing(canvas)
       }
     })
 
-    // 双击Group进入编辑模式
     canvas.on('mouse:dblclick', (e) => {
       if (e.target && e.target instanceof fabric.Group) {
         CanvasUtils.handleGroupEditing(e.target, canvas)
       }
     })
 
-    // 点击其他对象结束编辑
     canvas.on('selection:created', (e) => {
       if (CanvasUtils.isEditingGroup() && e.target) {
         const editingGroup = CanvasUtils.getEditingGroup()

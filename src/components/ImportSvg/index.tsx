@@ -68,17 +68,30 @@ const ImportSvg = ({ canvas }: Props) => {
 
           const group = new fabric.Group([], {
             objectCaching: true,
-            selectable: false // 先不可选，减少渲染压力
+            interactive: true,
+            subTargetCheck: true,
+            selectable: true // 先不可选，减少渲染压力
           })
 
           for (const obj of batch) {
             if (obj.type === 'text') {
               const iText = TextUtils.text2IText(obj as fabric.FabricText, canvas)
+              iText.set({
+                selectable: false,
+                subTargetCheck: true,
+                evented: false // 初始不响应事件
+              })
               group.add(iText)
             } else {
+              obj.set({
+                selectable: false,
+                subTargetCheck: true,
+                evented: false // 初始不响应事件
+              })
               group.add(obj)
             }
           }
+          //dev/nsfc_lite
 
           groups.push(group)
           canvas.add(group)
@@ -87,15 +100,18 @@ const ImportSvg = ({ canvas }: Props) => {
           // 每处理完一个分组就释放控制权
           await new Promise((resolve) => requestAnimationFrame(resolve))
         }
+        console.log(groups, 'groups')
 
         // 5. 最终合并分组（如果需要）
         if (groups.length > 1) {
           await new Promise((resolve) => setTimeout(resolve, 100))
           const mainGroup = new fabric.Group(groups, {
             objectCaching: true,
-            subTargetCheck: true
+            subTargetCheck: true,
+            interactive: true
           })
           canvas.clear()
+          console.log(mainGroup, 'mainGroupgroups')
           canvas.add(mainGroup)
         }
 

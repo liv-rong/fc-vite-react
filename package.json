@@ -12,6 +12,7 @@
   "dependencies": {
     "@ant-design/v5-patch-for-react-19": "^1.0.3",
     "@helix/draw-board": "^0.0.1",
+    "@helix/simplify-draw": "^0.0.3",
     "@tailwindcss/postcss": "^4.1.11",
     "antd": "^5.26.6",
     "fabric": "^6.7.1",

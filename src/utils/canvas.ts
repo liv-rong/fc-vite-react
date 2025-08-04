@@ -61,37 +61,54 @@ export class CanvasUtils {
   static handleGroupEditing(group: fabric.Group, canvas: fabric.Canvas) {
     if (!group || !canvas) return
 
+    console.log('handleGroupEditing')
+
     // 如果已经在编辑状态，则不做处理
     if (this.editingGroup === group) return
 
     // 结束之前的编辑状态
     this.endGroupEditing(canvas)
 
-    // 保存原始状态并设置为可编辑
-    const objects = group.getObjects()
-    objects.forEach((obj) => {
-      this.originalStates.set(obj, {
-        selectable: obj.selectable,
-        evented: obj.evented,
-        hasControls: obj.hasControls,
-        hasBorders: obj.hasBorders,
-        hoverCursor: obj.hoverCursor
-      })
+    // 递归处理所有对象（包括嵌套group中的对象）
+    const processObjects = (objects: fabric.Object[]) => {
+      console.log(objects, 'objects')
+      objects.forEach((obj) => {
+        console.log(obj, 'obj')
 
-      obj.set({
-        selectable: true,
-        evented: true,
-        hasControls: true,
-        hasBorders: true,
-        hoverCursor: 'move'
+        // 如果是嵌套的group，递归处理其子对象
+        if (obj instanceof fabric.Group) {
+          processObjects(obj.getObjects())
+        }
+
+        // 保存原始状态
+        this.originalStates.set(obj, {
+          selectable: obj.selectable,
+          evented: obj.evented,
+          hasControls: obj.hasControls,
+          hasBorders: obj.hasBorders,
+          hoverCursor: obj.hoverCursor
+        })
+
+        // 设置为可编辑状态
+        obj.set({
+          selectable: true,
+          evented: true,
+          hasControls: true,
+          hasBorders: true,
+          hoverCursor: 'move'
+        })
       })
-    })
+    }
+
+    // 处理当前group的所有对象
+    console.log(group, 'group')
+    console.log(group.getObjects(), 'group.getObjects()')
+    processObjects(group.getObjects())
 
     // 标记当前编辑的Group
     this.editingGroup = group
     canvas.renderAll()
   }
-
   /**
    * 结束Group编辑状态
    * @param canvas 画布实例
