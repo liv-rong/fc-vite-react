@@ -2,7 +2,7 @@ import { Button } from 'antd'
 import * as fabric from 'fabric'
 import { useEffect, useRef, useState } from 'react'
 import { useDeleteObjects } from '../hooks/use-event'
-import { ExportPdf, ExportSvg, ImportSvg } from './index'
+import { ExportPdf, ExportSvg, ImportSvg, ImportPdf } from './index'
 import { CanvasUtils } from '../utils/canvas'
 
 const FabricJSCanvas = () => {
@@ -171,9 +171,10 @@ const FabricJSCanvas = () => {
 
   return (
     <div className="flex flex-col h-screen w-screen bg-gray-100">
-      <div className="space-x-2 p-2 bg-white shadow">
+      <div className="space-x-2 p-2 bg-white shadow flex justify-center items-center">
         <ImportSvg canvas={canvas} />
         <ExportPdf canvas={canvas} />
+        <ImportPdf canvas={canvas} />
         <ExportSvg canvas={canvas} />
         <Button onClick={handleText}>添加文本</Button>
       </div>
