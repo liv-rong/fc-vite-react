@@ -1,13 +1,10 @@
-import { DrawBoard } from 'ivy-fc-test1'
+import { DrawBoard, DrawBoardDndProvider } from 'ivy-fc-test1'
 import type { DrawBoardRef, SidebarProps } from 'ivy-fc-test1'
 import { jsonData, jsonData1 } from './data'
 
 import { useState, useRef } from 'react'
 
 import { Button } from 'antd'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import MyDndProvider from './DndProvider'
 
 const TestComp = () => {
   const [edit, setEdit] = useState(true)
@@ -54,36 +51,36 @@ const TestComp = () => {
   }
 
   return (
-    <MyDndProvider>
-      <div
-        className="flex h-screen w-screen min-w-[1200px] flex-col items-center justify-center gap-10 bg-white"
-        style={{ color: '#000000' }}
-      >
-        <div className="flex gap-5">
-          <Button onClick={() => setEdit(!edit)}>{edit ? '退出编辑' : '进入编辑'}</Button>
-          <Button onClick={handleExportJson}>导出JSON</Button>
-          <Button onClick={handleImportJson}>导入JSON1</Button>
-          <Button onClick={handleImportJson2}>导入JSON2</Button>
-          <Button onClick={addSvg}>导入Svg</Button>
-          <Button
-            onClick={() => {
-              setOperateType(['line', 'shape'])
-            }}
-          >
-            转为流程图模式
-          </Button>
-        </div>
+    <div
+      className="flex h-screen w-screen min-w-[1200px] flex-col items-center justify-center gap-10 bg-white"
+      style={{ color: '#000000' }}
+    >
+      <div className="flex gap-5">
+        <Button onClick={() => setEdit(!edit)}>{edit ? '退出编辑' : '进入编辑'}</Button>
+        <Button onClick={handleExportJson}>导出JSON</Button>
+        <Button onClick={handleImportJson}>导入JSON1</Button>
+        <Button onClick={handleImportJson2}>导入JSON2</Button>
+        <Button onClick={addSvg}>导入Svg</Button>
+        <Button
+          onClick={() => {
+            setOperateType(['line', 'shape'])
+          }}
+        >
+          转为流程图模式
+        </Button>
+      </div>
 
-        <div className="h-[800px] w-[1200px] border">
+      <div className="h-[800px] w-[1200px] border">
+        <DrawBoardDndProvider>
           <DrawBoard
             mode={operateType}
             edit={edit}
             ref={flowChartRef}
             sidebarProps={sidebarProps}
           />
-        </div>
+        </DrawBoardDndProvider>
       </div>
-    </MyDndProvider>
+    </div>
   )
 }
 

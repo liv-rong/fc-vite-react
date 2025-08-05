@@ -16,7 +16,7 @@
     "@tailwindcss/postcss": "^4.1.11",
     "antd": "^5.26.6",
     "fabric": "^6.7.1",
-    "ivy-fc-test1": "^0.4.2",
+    "ivy-fc-test1": "^0.4.6",
     "jspdf": "^3.0.1",
     "pdfjs-dist": "^5.4.54",
     "postcss": "^8.5.6",

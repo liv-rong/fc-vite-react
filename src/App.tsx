@@ -1,11 +1,13 @@
 import './App.css'
 import FabricJSCanvas from './components/page'
-// import TestComp from './components/ivy-fc-test1'
+import TestComp from './ivy-fc-test1'
 
 function App() {
   return (
     <div>
-      <FabricJSCanvas />
+      <div className="!bg-red-100">eqweqw</div>
+      <TestComp />
+      {/* <FabricJSCanvas /> */}
     </div>
   )
 }
